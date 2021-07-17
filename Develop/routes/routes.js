@@ -1,10 +1,23 @@
 const router = require('express').Router();
 const path = require('path');
 const fs = require('fs');
-const dbNotes = JSON.parse(fs.readFileSync(path.join(__dirname, '../db/db.json'), 'utf8'));
 
-router.get('/notes', (req, res) => {
-    res.json(dbNotes);
+router.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, ('../public/index.html')));
+})
+
+router.get('/api/notes', (req, res) => {
+    console.log("hello");
+    // res.send('<h1>hello</h1>')
+    fs.readFile(path.join(__dirname, '../db/db.json'), 'utf8', (err, data) => {
+        console.log(data);
+        const dbNotes = JSON.parse(data);
+        console.log(dbNotes);
+        res.send(dbNotes);
+        if (err) {
+            return;
+        }
+    })
 });
 
 router.post('/notes', (req, res) => {
@@ -13,9 +26,10 @@ router.post('/notes', (req, res) => {
     updateDbFile(); 
 });
 
-router.get('/notes/:id', (req, res) => {
-    res.json(dbNotes[req.params.id])
-});
+// if err put in readfile
+// router.get('/notes/:id', (req, res) => {
+//     res.json(dbNotes[req.params.id])
+// });
 
 
 
